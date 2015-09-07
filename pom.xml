@@ -9,7 +9,7 @@
 	<version>0.8.6-SNAPSHOT</version>
 
 	<properties>
-		<graal.version>0.8.4</graal.version>
+		<graal.version>0.8.7</graal.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
 	</properties>
