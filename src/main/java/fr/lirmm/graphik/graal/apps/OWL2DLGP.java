@@ -21,19 +21,19 @@ import java.io.IOException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Level;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import fr.lirmm.graphik.graal.core.Atom;
-import fr.lirmm.graphik.graal.core.Predicate;
+import ch.qos.logback.classic.Level;
+import fr.lirmm.graphik.graal.api.core.Atom;
+import fr.lirmm.graphik.graal.api.core.Predicate;
+import fr.lirmm.graphik.graal.core.DefaultNegativeConstraint;
 import fr.lirmm.graphik.graal.core.atomset.LinkedListAtomSet;
-import fr.lirmm.graphik.graal.core.factory.AtomFactory;
-import fr.lirmm.graphik.graal.core.impl.DefaultNegativeConstraint;
+import fr.lirmm.graphik.graal.core.factory.DefaultAtomFactory;
 import fr.lirmm.graphik.graal.core.term.DefaultTermFactory;
 import fr.lirmm.graphik.graal.io.dlp.Directive;
 import fr.lirmm.graphik.graal.io.dlp.DlgpWriter;
+import fr.lirmm.graphik.graal.io.dlp.Directive.Type;
 import fr.lirmm.graphik.graal.io.owl.OWL2Parser;
 import fr.lirmm.graphik.graal.io.owl.OWL2ParserException;
 import fr.lirmm.graphik.util.Apps;
@@ -47,7 +47,7 @@ import fr.lirmm.graphik.util.Prefix;
 public class OWL2DLGP {
 	
 	private static Predicate THING = new Predicate(new DefaultURI("http://www.w3.org/2002/07/owl#Thing"), 1);
-	private static Atom NOTHING = AtomFactory.instance().create(
+	private static Atom NOTHING = DefaultAtomFactory.instance().create(
 			new Predicate(
 			new DefaultURI("http://www.w3.org/2002/07/owl#Nothing"), 1), DefaultTermFactory.instance().createVariable(
 			"X"));
@@ -63,6 +63,9 @@ public class OWL2DLGP {
 
 	@Parameter(names = { "-o", "--output" }, description = "The output file")
 	private String outputFile = "";
+	
+	@Parameter(names = { "-b", "--base" }, description = "specify dlgp base directive")
+	private String base = "";
 
 	@Parameter(names = { "-d", "--debug" }, description = "enable debug mode", hidden = true)
 	private Boolean debugMode = false;
@@ -96,13 +99,16 @@ public class OWL2DLGP {
 		} else {
 			parser = new OWL2Parser(new File(options.inputFile));
 		}
-
+		
 		if (options.outputFile.isEmpty()) {
 			writer = new DlgpWriter(System.out);
 		} else {
 			writer = new DlgpWriter(new File(options.outputFile));
 		}
 
+		if (!options.base.isEmpty()) {
+			writer.writeDirective(new Directive(Type.BASE, options.base));
+		}
 
 		// MAIN
 		Object o;
