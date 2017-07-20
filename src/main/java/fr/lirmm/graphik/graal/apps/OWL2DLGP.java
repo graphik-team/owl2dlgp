@@ -107,7 +107,7 @@ public class OWL2DLGP {
 		}
 
 		if (!options.base.isEmpty()) {
-			writer.writeDirective(new Directive(Type.BASE, options.base));
+			writer.write(new Directive(Type.BASE, options.base));
 		}
 
 		// MAIN
@@ -115,7 +115,7 @@ public class OWL2DLGP {
 		while (parser.hasNext()) {
 			o = parser.next();
 			if (!(o instanceof Prefix)) {
-				writer.writeDirective(new Directive(Directive.Type.TOP, THING));
+				writer.write(new Directive(Directive.Type.TOP, THING));
 				writer.write(new DefaultNegativeConstraint(new LinkedListAtomSet(NOTHING)));
 				writer.write(o);
 				break;
